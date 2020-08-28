@@ -3,7 +3,7 @@ package com.example.SpringBootMasterClass.model;
 import java.util.UUID;
 
 public class User {
-    private final UUID userUid;
+    private UUID userUid;
     private final String firstName;
     private final String lastName;
     private final Gender gender;
@@ -26,6 +26,10 @@ public class User {
 
     public UUID getUserUid() {
         return userUid;
+    }
+
+    public void setUserUid(UUID userUid) {
+        this.userUid = userUid;
     }
 
     public String getFirstName() {
