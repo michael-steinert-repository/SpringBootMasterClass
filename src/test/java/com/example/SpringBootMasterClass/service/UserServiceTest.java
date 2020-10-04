@@ -40,7 +40,7 @@ class UserServiceTest {
                 .build();
         given(fakeDataDao.selectAllUser()).willReturn(users);
 
-        List<User> allUsers = userService.getAllUsers();
+        List<User> allUsers = userService.getAllUsers(Optional.empty());
         assertThat(allUsers).hasSize(1);
         User newUser = allUsers.get(0);
         assertUserFields(newUser);

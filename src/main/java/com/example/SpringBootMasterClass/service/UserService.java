@@ -5,10 +5,10 @@ import com.example.SpringBootMasterClass.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -20,8 +20,20 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public List<User> getAllUsers() {
-        return userDao.selectAllUser();
+    public List<User> getAllUsers(Optional<String> gender) {
+        List<User> users = userDao.selectAllUser();
+        if(gender.isPresent()){
+            try {
+                User.Gender getGender = User.Gender.valueOf(gender.get().toUpperCase());
+                return users.stream()
+                    .filter(user -> user.getGender().equals(getGender))
+                    .collect(Collectors.toList());
+            } catch (Exception e) {
+                throw new IllegalStateException("Invalid Gender", e);
+            }
+        }
+
+        return users;
     }
 
 
