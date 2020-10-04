@@ -32,10 +32,8 @@ public class UserService {
                 throw new IllegalStateException("Invalid Gender", e);
             }
         }
-
         return users;
     }
-
 
     public Optional<User> getUser(UUID userUid) {
         return userDao.selectUserByUserUid(userUid);

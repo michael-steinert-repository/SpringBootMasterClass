@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -56,6 +57,31 @@ class UserServiceTest {
         assertThat(userOptional.isPresent()).isTrue();
         User newUser = userOptional.get();
         assertUserFields(newUser);
+    }
+
+    @Test
+    public void shouldGetAllUserByGender() throws Exception {
+        UUID user1Uid = UUID.randomUUID();
+        User user1 = new User(user1Uid, "Michael", "Steinert", User.Gender.MALE, 26, "steinert-michael@gmx.de");
+        UUID user2Uid = UUID.randomUUID();
+        User user2 = new User(user2Uid, "Marie", "Schmidt", User.Gender.FEMALE, 24, "schmidt-marie@gmx.de");
+
+        ImmutableList<User> users = new ImmutableList.Builder<User>()
+                .add(user1)
+                .add(user2)
+                .build();
+        given(fakeDataDao.selectAllUser()).willReturn(users);
+
+        List<User> allMaleUsers = userService.getAllUsers(Optional.of("MALE"));
+        assertThat(allMaleUsers).hasSize(1);
+        assertUserFields(allMaleUsers.get(0));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenGenderIsInvalid() throws Exception {
+        assertThatThrownBy(() -> userService.getAllUsers(Optional.of("Transgender")))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Invalid Gender.");
     }
 
     @Test
