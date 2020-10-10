@@ -30,41 +30,27 @@ public class UserController {
     }
 
     @GetMapping(path = "{userUid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> fetchUser(@PathVariable("userUid") UUID userUid) {
-        //Optional<User> userOptional = userService.getUser(userUid);
-        //if(userOptional.isPresent()) {
-        //    return ResponseEntity.ok(userOptional.get());
-        //}
-        //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorMessage("User: " + userUid + " was not found."));
-        //Functional Programming
-        return userService.getUser(userUid).<ResponseEntity<?>>map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorMessage("User: " + userUid + " was not found.")));
+    public User fetchUser(@PathVariable("userUid") UUID userUid) {
+        Optional<User> userOptional = userService.getUser(userUid);
+        if(userOptional.isPresent()) {
+            return userOptional.get();
+        }
+        return null;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> insertNewUser(@RequestBody User user) {
-        int result = userService.insertUser(user);
-        return getIntegerResponseEntity(result);
+    public Integer insertNewUser(@RequestBody User user) {
+        return userService.insertUser(user);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> updateUpdate(@RequestBody User user) {
-        int result = userService.updateUser(user);
-        return getIntegerResponseEntity(result);
+    public Integer updateUpdate(@RequestBody User user) {
+        return userService.updateUser(user);
     }
 
     @DeleteMapping(path = "{userUid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> deleteUser(@PathVariable("userUid") UUID userUid) {
-        int result = userService.removeUser(userUid);
-        return getIntegerResponseEntity(result);
-    }
-
-    private ResponseEntity<Integer> getIntegerResponseEntity(int result) {
-        if (result == 1) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
+    public Integer deleteUser(@PathVariable("userUid") UUID userUid) {
+        return userService.removeUser(userUid);
     }
 
     class ErrorMessage {
