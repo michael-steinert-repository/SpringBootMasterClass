@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.QueryParam;
 import java.util.List;
 import java.util.Optional;
@@ -34,11 +35,9 @@ public class UserController {
 
     @GetMapping(path = "{userUid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public User fetchUser(@PathVariable("userUid") UUID userUid) {
-        Optional<User> userOptional = userService.getUser(userUid);
-        if(userOptional.isPresent()) {
-            return userOptional.get();
-        }
-        return null;
+        return userService
+                .getUser(userUid)
+                .orElseThrow(() -> new NotFoundException("User " + userUid + " not found."));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

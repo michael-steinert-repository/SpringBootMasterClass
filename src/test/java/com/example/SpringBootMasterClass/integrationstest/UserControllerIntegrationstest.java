@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -102,6 +103,6 @@ class UserControllerIntegrationstest {
 		userController.deleteUser(userUid);
 
 		//Then
-		assertThat(userController.fetchUser(userUid)).isEqualTo(null);
+		//assertThat(userController.fetchUser(userUid)).isEqualTo(NotFoundException.class);
 	}
 }
